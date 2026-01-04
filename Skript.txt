@@ -1,6 +1,6 @@
 $LogPath = "C:\Lab\Tasks\healthcheck.log"
 
-# Ensure log folder exists
+
 New-Item -ItemType Directory -Force -Path (Split-Path $LogPath) | Out-Null
 
 try {
