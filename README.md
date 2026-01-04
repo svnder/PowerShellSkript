@@ -1,1 +1,27 @@
 # PowerShellSkript
+
+$LogPath = "C:\Lab\Tasks\healthcheck.log"
+
+# Ensure log folder exists
+New-Item -ItemType Directory -Force -Path (Split-Path $LogPath) | Out-Null
+
+try {
+    $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $who = whoami
+    $freeGB = [math]::Round((Get-PSDrive -Name C).Free / 1GB, 2)
+
+    "$ts | user=$who | C_free_GB=$freeGB | status=OK" |
+        Out-File -FilePath $LogPath -Append -Encoding utf8
+
+    exit 0
+}
+catch {
+    $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    "$ts | user=UNKNOWN | status=ERROR | $($_.Exception.Message)" |
+        Out-File -FilePath $LogPath -Append -Encoding utf8
+
+    exit 1
+}
+
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Skriptid\lab_healthcheck.ps1"
